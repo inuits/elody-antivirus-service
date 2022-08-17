@@ -13,7 +13,7 @@ include:
 
 variables:
   CUSTOMER: 'inuits'
-  APPLICATION: 'dams-antivirus-service'
+  APPLICATION: 'dams-antivirus'
   TERRAFORM_IMAGE: 'dams-terraform'
   TERRAFORM_TAG: 'latest'
   SKIP_DEPLOY: 'true'
