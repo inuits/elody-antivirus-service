@@ -1,23 +1,18 @@
 ### Base stage
 FROM python:3.10-alpine AS base-stage
 
-RUN apk add --no-cache clamav clamav-libunrar clamav-daemon \
-	&& freshclam \
-	&& mkdir /var/run/clamav \
-	&& chown clamav:clamav /var/run/clamav \
-	&& chmod 750 /var/run/clamav
+RUN apk update && apk add --no-cache clamav clamav-libunrar clamav-daemon \
+	&& mkdir -p /var/run/clamav \
+	&& chown -R clamav:clamav /var/run/clamav \
+    && mkdir -p /var/log/clamav \
+    && chown -R clamav:clamav /var/log/clamav \
+    && freshclam
 
 ENV FLASK_APP=app.py
-
-RUN adduser --disabled-password --home /app --shell /bin/bash app
-USER app
-WORKDIR /app
 
 COPY docker/entrypoint*.sh /
 COPY requirements.txt ./
 COPY requirements_dev.txt ./
-
-RUN echo "export PATH=${PATH}:/app/.local/bin" >> .bashrc
 
 ENTRYPOINT ["/entrypoint.sh"]
 
@@ -44,9 +39,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM base-stage AS production-stage
 
 ENV APP_ENV=prod
-
-COPY --from=build-stage /app /app
-
 ENV GUNICORN_CMD_ARGS="--workers=3"
 
 EXPOSE 8000
