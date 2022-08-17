@@ -14,6 +14,8 @@ if [ ! -z "$TRUSTED_CA_BUNDLE" ]; then
   export CURL_CA_BUNDLE="/tmp/ca-certificates.crt"
 fi
 
+./usr/sbin/clamd
+
 if [ "$APP_ENV" = "dev" ]; then
   echo "Starting development server..."
   export FLASK_ENV=development

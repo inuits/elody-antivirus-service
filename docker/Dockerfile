@@ -5,8 +5,7 @@ RUN apk add --no-cache clamav clamav-libunrar clamav-daemon \
 	&& freshclam \
 	&& mkdir /var/run/clamav \
 	&& chown clamav:clamav /var/run/clamav \
-	&& chmod 750 /var/run/clamav \
-	&& clamd
+	&& chmod 750 /var/run/clamav
 
 ENV FLASK_APP=app.py
 
