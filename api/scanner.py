@@ -14,10 +14,14 @@ class Scanner:
         return item["_key"] if "_key" in item else item["_id"]
 
     def __remove_infected_mediafile(self, mediafile):
-        requests.delete(
+        req = requests.delete(
             f"{self.collection_api_url}/mediafiles/{self.__get_raw_id(mediafile)}",
             headers=self.headers,
         )
+        if req.status_code != 204:
+            app.logger.error(
+                f'FAILED TO DELETE {mediafile["filename"]}: {req.text.strip()}'
+            )
 
     def scan_file(self, url, mediafile):
         scan = pyclamd.ClamdAgnostic()
