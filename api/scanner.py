@@ -1,23 +1,28 @@
 import app
 import io
-import json
+import os
 import pyclamd
 import requests
 
-from cloudevents.http import CloudEvent, to_json
 
+class Scanner:
+    def __init__(self):
+        self.collection_api_url = os.getenv("COLLECTION_API_URL")
+        self.headers = {"Authorization": f'Bearer {os.getenv("STATIC_JWT")}'}
 
-def __signal_virus_detected(signature, url):
-    attributes = {"type": "dams.virus_detected", "source": "dams"}
-    data = {"signature": signature, "url": url}
-    event = CloudEvent(attributes, data)
-    message = json.loads(to_json(event))
-    app.rabbit.send(message, routing_key="dams.mediafile_changed")
+    def __get_raw_id(self, item):
+        return item["_key"] if "_key" in item else item["_id"]
 
+    def __remove_infected_mediafile(self, mediafile):
+        requests.delete(
+            f"{self.collection_api_url}/mediafiles/{self.__get_raw_id(mediafile)}",
+            headers=self.headers,
+        )
 
-def scan_file(url):
-    scan = pyclamd.ClamdAgnostic()
-    with io.BytesIO(requests.get(url).content) as file:
-        scan_result = scan.scan_stream(file)
-    if scan_result:
-        __signal_virus_detected(scan_result, url)
+    def scan_file(self, url, mediafile):
+        scan = pyclamd.ClamdAgnostic()
+        with io.BytesIO(requests.get(url).content) as file:
+            scan_result = scan.scan_stream(file)
+        if scan_result:
+            app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
+            self.__remove_infected_mediafile(mediafile)
