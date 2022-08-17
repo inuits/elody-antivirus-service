@@ -31,7 +31,7 @@ EXPOSE 5000
 FROM base-stage AS build-stage
 
 COPY docker/pip.conf /etc
-COPY api ./api
+COPY api /app/api
 
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -40,5 +40,7 @@ FROM base-stage AS production-stage
 
 ENV APP_ENV=prod
 ENV GUNICORN_CMD_ARGS="--workers=3"
+
+COPY --from=build-stage /app /app
 
 EXPOSE 8000
