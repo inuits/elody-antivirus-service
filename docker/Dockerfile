@@ -39,8 +39,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM base-stage AS production-stage
 
 ENV APP_ENV=prod
-ENV GUNICORN_CMD_ARGS="--workers=3"
 
-COPY --from=build-stage /app /app
+COPY --from=build-stage / /
+
+ENV GUNICORN_CMD_ARGS="--workers=3"
 
 EXPOSE 8000
