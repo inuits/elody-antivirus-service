@@ -1,6 +1,5 @@
 import app
 import io
-import json
 import os
 import pyclamd
 import requests
@@ -17,15 +16,17 @@ class Scanner:
     def __get_raw_id(self, item):
         return item["_key"] if "_key" in item else item["_id"]
 
-    def __signal_virus_detected(self, mediafile, scan_result):
-        attributes = {"type": "dams.virus_detected", "source": "dams"}
+    def __signal_file_scanned(self, mediafile, clamav_version, scan_result):
+        attributes = {"type": "dams.file_scanned", "source": "dams"}
         data = {
-            "filename": mediafile["filename"],
             "mediafile_id": self.__get_raw_id(mediafile),
-            "scan_result": scan_result,
+            "clamav_version": clamav_version,
+            "infected": scan_result is not None,
         }
+        if scan_result:
+            data["infection_info"] = scan_result
         event = to_dict(CloudEvent(attributes, data))
-        app.rabbit.send(event, routing_key="dams.virus_detected")
+        app.rabbit.send(event, routing_key="dams.file_scanned")
 
     def scan_file(self, url, mediafile):
         scan = pyclamd.ClamdAgnostic()
@@ -33,4 +34,4 @@ class Scanner:
             scan_result = scan.scan_stream(file)
         if scan_result:
             app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
-            self.__signal_virus_detected(mediafile, scan_result)
+        self.__signal_file_scanned(mediafile, scan.version(), scan_result)
