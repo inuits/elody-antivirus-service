@@ -12,3 +12,8 @@ def scan_file(routing_key, body, message_id):
         Scanner().scan_file(data["url"], data["mediafile"])
     except Exception as ex:
         app.logger.error(f'Failed to scan {data["mediafile"]["filename"]}: {ex}')
+
+
+@app.rabbit.queue("dams.update_clamav")
+def update_clamav(routing_key, body, message_id):
+    Scanner().update()

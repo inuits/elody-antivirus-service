@@ -3,6 +3,7 @@ import io
 import os
 import pyclamd
 import requests
+import subprocess
 
 from cloudevents.conversion import to_dict
 from cloudevents.http import CloudEvent
@@ -35,3 +36,6 @@ class Scanner:
         if scan_result:
             app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
         self.__signal_file_scanned(mediafile, scan.version(), scan_result)
+
+    def update(self):
+        subprocess.run(["/usr/bin/freshclam"])
