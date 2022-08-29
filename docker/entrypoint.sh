@@ -15,7 +15,6 @@ if [ ! -z "$TRUSTED_CA_BUNDLE" ]; then
 fi
 
 /usr/sbin/clamd
-/usr/bin/freshclam
 
 if [ "$APP_ENV" = "dev" ]; then
   echo "Starting development server..."
