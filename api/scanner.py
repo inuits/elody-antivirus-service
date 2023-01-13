@@ -14,13 +14,10 @@ class Scanner:
         self.collection_api_url = os.getenv("COLLECTION_API_URL")
         self.headers = {"Authorization": f'Bearer {os.getenv("STATIC_JWT")}'}
 
-    def __get_raw_id(self, item):
-        return item["_key"] if "_key" in item else item["_id"]
-
     def __signal_file_scanned(self, mediafile, clamav_version, scan_result):
         attributes = {"type": "dams.file_scanned", "source": "dams"}
         data = {
-            "mediafile_id": self.__get_raw_id(mediafile),
+            "mediafile_id": mediafile.get("_key", mediafile["_id"]),
             "clamav_version": clamav_version,
             "infected": scan_result is not None,
         }
