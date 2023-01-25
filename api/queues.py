@@ -4,7 +4,7 @@ from scanner import Scanner
 
 
 @app.rabbit.queue("dams.file_uploaded")
-def scan_file(routing_key, body, message_id):
+def scan_uploaded_file(routing_key, body, message_id):
     data = body["data"]
     if "mediafile" not in data or "mimetype" not in data or "url" not in data:
         return
@@ -15,5 +15,5 @@ def scan_file(routing_key, body, message_id):
 
 
 @app.rabbit.queue("dams.update_clamav")
-def update_clamav(routing_key, body, message_id):
+def update_clamav_version(routing_key, body, message_id):
     Scanner().update()
