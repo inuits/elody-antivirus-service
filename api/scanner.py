@@ -9,7 +9,16 @@ from cloudevents.conversion import to_dict
 from cloudevents.http import CloudEvent
 
 
-class Scanner:
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class Scanner(metaclass=Singleton):
     def __init__(self):
         self.collection_api_url = os.getenv("COLLECTION_API_URL")
         self.headers = {"Authorization": f'Bearer {os.getenv("STATIC_JWT")}'}
