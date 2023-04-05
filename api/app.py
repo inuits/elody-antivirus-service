@@ -6,6 +6,16 @@ from flask import Flask
 from rabbitmq_pika_flask import RabbitMQ
 from healthcheck import HealthCheck
 
+if os.getenv("SENTRY_ENABLED", False) in ["True", "true", True]:
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"),
+        integrations=[FlaskIntegration()],
+        environment=os.getenv("NOMAD_NAMESPACE"),
+    )
+
 app = Flask(__name__)
 app.config.update(
     {
