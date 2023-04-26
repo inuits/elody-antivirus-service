@@ -22,8 +22,6 @@ app.config.update(
         "MQ_EXCHANGE": os.getenv("RABMQ_SEND_EXCHANGE_NAME"),
         "MQ_URL": os.getenv("RABMQ_RABBITMQ_URL"),
         "SECRET_KEY": "SomethingNotEntirelySecret",
-        "TESTING": True,
-        "DEBUG": True,
     }
 )
 
@@ -52,4 +50,4 @@ app.add_url_rule("/health", "healthcheck", view_func=lambda: health.run())
 import queues
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
