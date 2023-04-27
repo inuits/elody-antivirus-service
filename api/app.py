@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import secrets
 
 from flask import Flask
 from rabbitmq_pika_flask import RabbitMQ
@@ -17,13 +18,7 @@ if os.getenv("SENTRY_ENABLED", False) in ["True", "true", True]:
     )
 
 app = Flask(__name__)
-app.config.update(
-    {
-        "MQ_EXCHANGE": os.getenv("RABMQ_SEND_EXCHANGE_NAME"),
-        "MQ_URL": os.getenv("RABMQ_RABBITMQ_URL"),
-        "SECRET_KEY": "SomethingNotEntirelySecret",
-    }
-)
+app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
 logging.basicConfig(
     format="%(asctime)s %(process)d,%(threadName)s %(filename)s:%(lineno)d [%(levelname)s] %(message)s",
