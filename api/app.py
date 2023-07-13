@@ -34,7 +34,11 @@ health = HealthCheck()
 
 
 def rabbit_available():
-    return True, rabbit.get_connection().is_open
+    connection = rabbit.get_connection()
+    if connection.is_open:
+        connection.close()
+        return True, "Successfully reached RabbitMQ"
+    return False, "Failed to reach RabbitMQ"
 
 
 if os.getenv("HEALTH_CHECK_EXTERNAL_SERVICES", True) in ["True", "true", True]:
