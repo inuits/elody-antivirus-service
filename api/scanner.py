@@ -21,7 +21,6 @@ class Singleton(type):
 class Scanner(metaclass=Singleton):
     def __init__(self):
         self.collection_api_url = os.getenv("COLLECTION_API_URL")
-        self.headers = {"Authorization": f'Bearer {os.getenv("STATIC_JWT")}'}
 
     def __signal_file_scanned(self, mediafile, clamav_version, scan_result):
         attributes = {"type": "dams.file_scanned", "source": "dams"}
@@ -35,9 +34,9 @@ class Scanner(metaclass=Singleton):
         event = to_dict(CloudEvent(attributes, data))
         app.rabbit.send(event, routing_key="dams.file_scanned")
 
-    def scan_file(self, url, mediafile):
+    def scan_file(self, url, mediafile, headers):
         scan = pyclamd.ClamdAgnostic()
-        with io.BytesIO(requests.get(url).content) as file:
+        with io.BytesIO(requests.get(url, headers=headers).content) as file:
             scan_result = scan.scan_stream(file)
         if scan_result:
             app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
