@@ -12,7 +12,6 @@ ENV FLASK_APP=app.py
 
 COPY docker/entrypoint*.sh /
 COPY requirements.txt ./
-COPY requirements_dev.txt ./
 
 ENTRYPOINT ["/entrypoint.sh"]
 
@@ -23,7 +22,7 @@ ENV APP_ENV=dev
 
 COPY docker/pip.conf /etc
 
-RUN pip install --no-cache-dir -r requirements.txt -r requirements_dev.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
 
