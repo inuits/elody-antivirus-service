@@ -39,7 +39,7 @@ class Scanner(metaclass=Singleton):
         with io.BytesIO(requests.get(url, headers=headers).content) as file:
             scan_result = scan.scan_stream(file)
         if scan_result:
-            app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
+            app.logger.error(f'VIRUS DETECTED IN {mediafile["identifier"]} {scan_result}')
         self.__signal_file_scanned(mediafile, scan.version(), scan_result)
 
     def update(self):
