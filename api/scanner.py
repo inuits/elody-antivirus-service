@@ -42,8 +42,6 @@ class Scanner(metaclass=Singleton):
 
     def scan_file(self, url, mediafile, headers, ticket=None):
         scan = pyclamd.ClamdAgnostic()
-        app.logger.error(f"This is the url: {url}")
-        app.logger.error(f"These are the headers: {headers}")
         with io.BytesIO(requests.get(url, headers=headers).content) as file:
             scan_result = scan.scan_stream(file)
         if scan_result:
