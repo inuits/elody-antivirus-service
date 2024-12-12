@@ -1,5 +1,5 @@
 ### Base stage
-FROM python:3.11-alpine AS base-stage
+FROM python:3.13-alpine AS base-stage
 
 RUN apk update && apk add --no-cache clamav clamav-libunrar clamav-daemon \
 	&& mkdir -p /var/run/clamav \
