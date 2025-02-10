@@ -1,1 +1,1 @@
-# CoGhent DAMS Media Importer
+# Inuits DAMS Antivirus Service
