@@ -2,6 +2,7 @@
 FROM python:3.12-alpine AS base-stage
 
 RUN apk update && apk add --no-cache clamav clamav-libunrar clamav-daemon \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
 	&& mkdir -p /var/run/clamav \
 	&& chown -R clamav:clamav /var/run/clamav \
     && mkdir -p /var/log/clamav \
