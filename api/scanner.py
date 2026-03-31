@@ -8,6 +8,8 @@ import subprocess
 from cloudevents.conversion import to_dict
 from cloudevents.http import CloudEvent
 
+ROUTING_KEY_PREFIX = os.getenv("ROUTING_KEY_PREFIX", "dams")
+
 
 class Singleton(type):
     _instances = {}
@@ -38,14 +40,14 @@ class Scanner(metaclass=Singleton):
         if scan_result:
             data["infection_info"] = scan_result
         event = to_dict(CloudEvent(attributes, data))
-        app.rabbit.send(event, routing_key="dams.file_scanned")
+        app.rabbit.send(event, routing_key=f"{ROUTING_KEY_PREFIX}.file_scanned")
 
     def scan_file(self, url, mediafile, headers, ticket=None):
         scan = pyclamd.ClamdAgnostic()
         with io.BytesIO(requests.get(url, headers=headers).content) as file:
             scan_result = scan.scan_stream(file)
         if scan_result:
-            app.logger.error(f'VIRUS DETECTED IN {mediafile["filename"]} {scan_result}')
+            app.logger.error(f"VIRUS DETECTED IN {mediafile['filename']} {scan_result}")
         self.__signal_file_scanned(mediafile, scan.version(), scan_result, ticket)
 
     def update(self):
