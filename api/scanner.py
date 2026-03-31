@@ -8,6 +8,8 @@ import subprocess
 from cloudevents.conversion import to_dict
 from cloudevents.http import CloudEvent
 
+from rabbit import get_rabbit
+
 ROUTING_KEY_PREFIX = os.getenv("ROUTING_KEY_PREFIX", "dams")
 
 
@@ -40,7 +42,7 @@ class Scanner(metaclass=Singleton):
         if scan_result:
             data["infection_info"] = scan_result
         event = to_dict(CloudEvent(attributes, data))
-        app.rabbit.send(event, routing_key=f"{ROUTING_KEY_PREFIX}.file_scanned")
+        get_rabbit().send(event, routing_key=f"{ROUTING_KEY_PREFIX}.file_scanned")
 
     def scan_file(self, url, mediafile, headers, ticket=None):
         scan = pyclamd.ClamdAgnostic()
