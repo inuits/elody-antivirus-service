@@ -34,7 +34,6 @@ health = HealthCheck()
 def rabbit_available():
     connection = get_rabbit().get_connection()
     if connection.is_open:
-        connection.close()
         return True, "Successfully reached RabbitMQ"
     return False, "Failed to reach RabbitMQ"
 
