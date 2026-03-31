@@ -1,11 +1,11 @@
-import json
 import logging
 import os
 import secrets
 
 from flask import Flask
-from rabbitmq_pika_flask import RabbitMQ
 from healthcheck import HealthCheck
+
+from rabbit import get_rabbit, init_rabbit
 
 if os.getenv("GLITCH_TIP_ENABLED", False) in ["True", "true", True]:
     import sentry_sdk
@@ -27,14 +27,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-rabbit = RabbitMQ()
-rabbit.init_app(app, "basic", json.loads, json.dumps)
-
+init_rabbit(app)
 health = HealthCheck()
 
 
 def rabbit_available():
-    connection = rabbit.get_connection()
+    connection = get_rabbit().get_connection()
     if connection.is_open:
         connection.close()
         return True, "Successfully reached RabbitMQ"
