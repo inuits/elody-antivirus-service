@@ -23,5 +23,5 @@ sentry-sdk[flask]==1.40.0
 six==1.16.0
 urllib3==2.2.2
 Werkzeug==3.0.1
-elody==0.0.250
+elody==0.0.267
 amqpstorm-flask==0.6.0-dev
