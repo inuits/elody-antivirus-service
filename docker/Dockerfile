@@ -1,5 +1,5 @@
 ### Base stage
-FROM python:3.12-alpine AS base-stage
+FROM python:3.14-alpine AS base-stage
 
 RUN apk update && apk add --no-cache clamav clamav-libunrar clamav-daemon \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
