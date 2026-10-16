@@ -6,7 +6,7 @@ from flask import Flask
 from healthcheck import HealthCheck
 
 from rabbit import get_rabbit, init_rabbit
-from observability import init_observability
+from elody.observability import init_observability
 
 app = Flask(__name__)
 init_observability(app)

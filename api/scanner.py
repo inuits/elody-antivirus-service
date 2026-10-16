@@ -5,8 +5,8 @@ import pyclamd
 import requests
 import subprocess
 
-from cloudevents.conversion import to_dict
-from cloudevents.http import CloudEvent
+from cloudevents.v1.conversion import to_dict
+from cloudevents.v1.http import CloudEvent
 
 from rabbit import get_rabbit
 
