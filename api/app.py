@@ -8,6 +8,16 @@ from healthcheck import HealthCheck
 from rabbit import get_rabbit, init_rabbit
 from elody.observability import init_observability
 
+if os.getenv("GLITCH_TIP_ENABLED", False) in ["True", "true", True]:
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+
+    sentry_sdk.init(
+        dsn=os.getenv("GLITCH_TIP_DSN"),
+        integrations=[FlaskIntegration()],
+        environment=os.getenv("NOMAD_NAMESPACE"),
+    )
+
 app = Flask(__name__)
 init_observability(app)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
