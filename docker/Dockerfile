@@ -2,12 +2,12 @@
 FROM python:3.12-alpine AS base-stage
 
 RUN apk update && apk add --no-cache clamav clamav-libunrar clamav-daemon \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
-	&& mkdir -p /var/run/clamav \
-	&& chown -R clamav:clamav /var/run/clamav \
-    && mkdir -p /var/log/clamav \
-    && chown -R clamav:clamav /var/log/clamav \
-    && freshclam
+  --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
+  && mkdir -p /var/run/clamav \
+  && chown -R clamav:clamav /var/run/clamav \
+  && mkdir -p /var/log/clamav \
+  && chown -R clamav:clamav /var/log/clamav \
+  && freshclam
 
 ENV FLASK_APP=app.py
 
@@ -33,7 +33,11 @@ FROM base-stage AS build-stage
 COPY docker/pip.conf /etc
 COPY api /app/api
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=secret,id=PIP_INDEX_URL,uid=1000 \
+  --mount=type=secret,id=PIP_TRUSTED_HOST,uid=1000 \
+  export PIP_INDEX_URL="$(cat /run/secrets/PIP_INDEX_URL)" \
+  PIP_TRUSTED_HOST="$(cat /run/secrets/PIP_TRUSTED_HOST)" && \
+  pip install --no-cache-dir -r requirements.txt
 
 ### Production stage
 FROM base-stage AS production-stage
