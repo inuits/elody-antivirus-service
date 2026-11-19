@@ -30,7 +30,6 @@ EXPOSE 5000
 ### Build stage
 FROM base-stage AS build-stage
 
-COPY docker/pip.conf /etc
 COPY api /app/api
 
 RUN --mount=type=secret,id=PIP_INDEX_URL,uid=1000 \
