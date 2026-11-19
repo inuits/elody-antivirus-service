@@ -24,4 +24,4 @@ six==1.16.0
 urllib3==2.8.0
 Werkzeug==3.1.9
 elody[observability]==0.0.271
-amqpstorm-flask==0.6.1
+amqpstorm-flask==0.7.1
