@@ -1,3 +1,4 @@
+import traceback
 import app
 
 from scanner import Scanner
@@ -34,6 +35,7 @@ def scan_uploaded_file(routing_key, body, message_id):
             data["url"], data["mediafile"], data["headers"], data.get("ticket")
         )
     except Exception as ex:
+        print(traceback.format_exc(), flush=True)
         app.logger.error(f"Failed to scan {data['mediafile']['filename']}: {ex}")
 
 
