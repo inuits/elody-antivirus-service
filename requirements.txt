@@ -23,6 +23,6 @@ sentry-sdk[flask]==1.40.0
 six==1.16.0
 urllib3==2.8.0
 Werkzeug==3.1.9
-elody[observability]==0.0.271
+elody[observability]==0.0.272
 AMQPStorm==2.11.1
 amqpstorm-flask==0.6.1
