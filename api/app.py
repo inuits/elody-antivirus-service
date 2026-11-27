@@ -2,11 +2,13 @@ import logging
 import os
 import secrets
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+from elody.observability import init_observability
 from flask import Flask
 from healthcheck import HealthCheck
-
 from rabbit import get_rabbit, init_rabbit
-from elody.observability import init_observability
+from scanner import Scanner
 
 if os.getenv("GLITCH_TIP_ENABLED", False) in ["True", "true", True]:
     import sentry_sdk
@@ -40,12 +42,24 @@ def rabbit_available():
     return False, "Failed to reach RabbitMQ"
 
 
+def schedule_db_update():
+
+    def update_db():
+
+        Scanner().update()
+
+    scheduler = BackgroundScheduler()
+    scheduler.start()
+    scheduler.add_job(update_db, CronTrigger().from_crontab("0 0 * * *"))
+
+
 if os.getenv("HEALTH_CHECK_EXTERNAL_SERVICES", True) in ["True", "true", True]:
     health.add_check(rabbit_available)
 
 app.add_url_rule("/health", "healthcheck", view_func=lambda: health.run())
+schedule_db_update()
 
-import queues
+import queues  # noqa: F401
 
 if __name__ == "__main__":
     app.run()
