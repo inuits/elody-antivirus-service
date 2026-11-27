@@ -24,6 +24,6 @@ six==1.16.0
 urllib3==2.8.0
 Werkzeug==3.1.9
 elody[observability]==0.0.273
-AMQPStorm==2.11.1
+AMQPStorm==3.1.5
 amqpstorm-flask==0.6.1
 apscheduler==3.11.3
